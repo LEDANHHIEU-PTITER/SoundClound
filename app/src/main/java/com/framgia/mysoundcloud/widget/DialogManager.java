@@ -53,11 +53,13 @@ public class DialogManager implements DialogManagerInterface {
                     .setPositiveButton(positiveButton, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             mListener.onDialogPositiveClick();
+                            dialog.dismiss();
                         }
                     })
                     .setNegativeButton(negativeButton, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             mListener.onDialogNegativeClick();
+                            dialog.dismiss();
                         }
                     })
                     .create()

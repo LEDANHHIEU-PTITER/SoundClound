@@ -26,6 +26,8 @@ import com.framgia.mysoundcloud.data.source.TrackDataSource;
 import com.framgia.mysoundcloud.data.source.local.SharePreferences;
 import com.framgia.mysoundcloud.screen.main.MainViewConstract;
 import com.framgia.mysoundcloud.utils.Constant;
+import com.framgia.mysoundcloud.widget.DialogManager;
+import com.framgia.mysoundcloud.widget.DialogManagerInterface;
 
 import java.util.List;
 
@@ -43,6 +45,7 @@ public class PlaylistFragment extends Fragment implements PlaylistContract.View,
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private FloatingActionButton btnAddPlaylist;
     private AlertDialog alertDialog;
+    private DialogManager mDialogManager;
 
     public static PlaylistFragment newInstance(MainViewConstract.TrackListListener listener) {
         if (sPlaylistFragment == null) {
@@ -71,7 +74,7 @@ public class PlaylistFragment extends Fragment implements PlaylistContract.View,
 
         setupUI(view);
         mPresenter.loadPlaylist();
-
+        mDialogManager = new DialogManager(getContext());
         return view;
     }
 
@@ -171,10 +174,7 @@ public class PlaylistFragment extends Fragment implements PlaylistContract.View,
 
                         return true;
                     case R.id.action_delete_playlist:
-                        User user = SharePreferences.getInstance().getUser();
-                        if(user != null) {
-                            mPresenter.deletePlayList(playlist, user.getId());
-                        }
+                        showDialogConfirmDeletePlaylist(playlist);
                         return true;
                     default:
                         return false;
@@ -182,6 +182,26 @@ public class PlaylistFragment extends Fragment implements PlaylistContract.View,
             }
         });
         popupMenu.show();
+    }
+
+    private void showDialogConfirmDeletePlaylist(final Playlist playlist) {
+        mDialogManager.dialogButton(getString(R.string.msg_delete_playlist),
+                "Delete", "Yes",
+                "No",
+                new DialogManagerInterface.DialogListener() {
+                    @Override
+                    public void onDialogPositiveClick() {
+                        User user = SharePreferences.getInstance().getUser();
+                        if(user != null) {
+                            mPresenter.deletePlayList(playlist, user.getId());
+                        }
+                    }
+
+                    @Override
+                    public void onDialogNegativeClick() {
+
+                    }
+                });
     }
 
 

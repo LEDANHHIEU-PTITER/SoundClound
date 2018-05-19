@@ -17,10 +17,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.framgia.mysoundcloud.R;
+import com.framgia.mysoundcloud.data.model.Playlist;
 import com.framgia.mysoundcloud.data.model.Track;
+import com.framgia.mysoundcloud.data.model.User;
+import com.framgia.mysoundcloud.data.source.local.SharePreferences;
 import com.framgia.mysoundcloud.screen.BaseFragment;
 import com.framgia.mysoundcloud.screen.main.MainViewConstract;
 import com.framgia.mysoundcloud.utils.Constant;
+import com.framgia.mysoundcloud.widget.DialogManager;
+import com.framgia.mysoundcloud.widget.DialogManagerInterface;
 
 import java.util.ArrayList;
 
@@ -37,6 +42,7 @@ public class PlaylistDetailTracksFragment extends BaseFragment
     private TracksAdapter mDownloadedTracksAdapter;
     private TextView mTextNumberTracks;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private DialogManager mDialogManager;
 
     public static PlaylistDetailTracksFragment newInstance(
             MainViewConstract.TrackListListener listListener, String flag) {
@@ -70,7 +76,7 @@ public class PlaylistDetailTracksFragment extends BaseFragment
 
         mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-
+        mDialogManager = new DialogManager(getContext());
         initializePermissionStorage();
     }
 
@@ -146,7 +152,27 @@ public class PlaylistDetailTracksFragment extends BaseFragment
 
     @Override
     public void onDeleteClicked(Track track) {
-        mPresenter.deleteTrackFavorie(track);
+        showDialogConfirmDeleteTrack(track);
+    }
+    private void showDialogConfirmDeleteTrack(final Track track) {
+        mDialogManager.dialogButton(getString(R.string.msg_delete_track),
+                "Delete", "Yes",
+                "No",
+                new DialogManagerInterface.DialogListener() {
+                    @Override
+                    public void onDialogPositiveClick() {
+                        User user = SharePreferences.getInstance().getUser();
+                        if(user != null) {
+                            mPresenter.deleteTrackFavorie(track);
+
+                        }
+                    }
+
+                    @Override
+                    public void onDialogNegativeClick() {
+
+                    }
+                });
     }
 
     private void initializePermissionStorage() {

@@ -24,5 +24,7 @@ public interface PlaylistContract {
         void loadPlaylist();
 
         void deletePlayList(Playlist playlist, String id);
+
+        void editPlayList(Playlist playlist, String id);
     }
 }

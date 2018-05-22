@@ -231,4 +231,9 @@ public class TrackLocalDataSource implements TrackDataSource.LocalDataSource {
         if(mPlaylistTrackDbHelper == null) return;
         mPlaylistTrackDbHelper.deleteTrackFavorite(track, idUser, listener);
     }
+
+    @Override
+    public void editNamePlayList(Playlist playlist, String userId, OnHandleDatabaseListener listener) {
+        mPlaylistTrackDbHelper.editNamePlayList(playlist, userId, listener);
+    }
 }

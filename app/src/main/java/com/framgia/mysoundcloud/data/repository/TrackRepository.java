@@ -98,6 +98,12 @@ public class TrackRepository implements TrackDataSource.RemoteDataSource,
     }
 
     @Override
+    public void editNamePlayList(Playlist playlist, String userId, OnHandleDatabaseListener listener) {
+        if(mTrackLocalDataSource == null)return;
+        mTrackLocalDataSource.editNamePlayList(playlist, userId, listener);
+    }
+
+    @Override
     public List<Playlist> getDetailPlaylistbyIdUser(String id) {
         if (mTrackLocalDataSource == null) return null;
         return mTrackLocalDataSource.getDetailPlaylistbyIdUser(id);

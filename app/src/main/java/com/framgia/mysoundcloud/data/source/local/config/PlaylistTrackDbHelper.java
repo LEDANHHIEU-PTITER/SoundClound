@@ -365,6 +365,25 @@ public class PlaylistTrackDbHelper extends SQLiteOpenHelper {
     }
 
     //By Hieu
+    public void editNamePlayList(Playlist playlist, String userId, TrackDataSource.OnHandleDatabaseListener listener) {
+        SQLiteDatabase database = getWritableDatabase();
+        try {
+            ContentValues values = new ContentValues();
+            values.put(PlaylistEntry.COLUMN_NAME_PLAYLIST, playlist.getName());
+            long a = database.update(TABLE_NAME_PLAYLIST, values,
+                    PlaylistEntry.COLUMN_NAME_PLAYLIST_ID + " = ? ",
+                    new String[]{String.valueOf(playlist.getId())});
+            if (a > 0)
+                listener.onHandleSuccess("Update " + playlist.getName() + "success !");
+            else {
+                listener.onHandleFailure("Error !!");
+            }
+        } catch (SQLException e) {
+            listener.onHandleFailure(e.getMessage());
+        }
+    }
+
+    //By Hieu
     public void deletePlayList(Playlist playlist, String userId, TrackDataSource.OnHandleDatabaseListener listener) {
         SQLiteDatabase database = getWritableDatabase();
         try {

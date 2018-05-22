@@ -82,12 +82,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onCancel() {
-                // App code
+                Toast.makeText(LoginActivity.this,"Login attempt canceled.", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onError(FacebookException error) {
-
+                Toast.makeText(LoginActivity.this,"Login attempt failed.", Toast.LENGTH_LONG).show();
             }
 
         });

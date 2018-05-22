@@ -55,6 +55,21 @@ public class PlaylistPresenter implements PlaylistContract.Presenter, TrackDataS
     }
 
     @Override
+    public void editPlayList(Playlist playlist, String id) {
+        TrackRepository.getInstance().editNamePlayList(playlist, id, new TrackDataSource.OnHandleDatabaseListener() {
+            @Override
+            public void onHandleSuccess(String message) {
+                loadPlaylist();
+            }
+
+            @Override
+            public void onHandleFailure(String message) {
+                mView.showMessage(message);
+            }
+        });
+    }
+
+    @Override
     public void onFetchDataSuccess(List<Playlist> data) {
         mView.showPlaylist(data);
     }

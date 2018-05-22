@@ -171,7 +171,7 @@ public class PlaylistFragment extends Fragment implements PlaylistContract.View,
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_edit_name_playlist:
-
+                        showDialogEditPlayList(playlist);
                         return true;
                     case R.id.action_delete_playlist:
                         showDialogConfirmDeletePlaylist(playlist);
@@ -182,6 +182,33 @@ public class PlaylistFragment extends Fragment implements PlaylistContract.View,
             }
         });
         popupMenu.show();
+    }
+
+    private void showDialogEditPlayList(final Playlist playlist) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Rename Playlist");
+        builder.setMessage("Name Playlist");
+        final EditText input = new EditText(builder.getContext());
+        input.setText(playlist.getName());
+        builder.setView(input);
+        builder.setPositiveButton("Edit ", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String name = input.getText().toString().trim();
+                if (name.isEmpty()) {
+                    Toast.makeText(
+                            getContext(), R.string.msg_err_name_null, Toast.LENGTH_SHORT).show();
+                } else {
+                    User user = SharePreferences.getInstance().getUser();
+                    playlist.setName(name);
+                    mPresenter.editPlayList(playlist, user.getId());
+                }
+                dialog.cancel();
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        alertDialog = builder.show();
+
     }
 
     private void showDialogConfirmDeletePlaylist(final Playlist playlist) {

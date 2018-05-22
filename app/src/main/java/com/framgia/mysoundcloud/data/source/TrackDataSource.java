@@ -40,6 +40,7 @@ public interface TrackDataSource {
         void getTrackFavorite(String idUser, OnFetchDataListener<Track> listener);
 
         void deleteTrackFavorite(Track track, String idUser, TrackDataSource.OnHandleDatabaseListener listener);
+         void editNamePlayList(Playlist playlist, String userId, TrackDataSource.OnHandleDatabaseListener listener) ;
     }
 
     /**

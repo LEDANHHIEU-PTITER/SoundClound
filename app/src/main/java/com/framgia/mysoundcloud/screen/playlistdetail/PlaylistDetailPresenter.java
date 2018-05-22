@@ -63,6 +63,13 @@ public class PlaylistDetailPresenter implements PlayListDetailViewContract.Prese
             }
         });
     }
+    @Override
+    public void deleteTrackLocal(Track track) {
+       if(TrackRepository.getInstance().deleteTrack(track)){
+           loadTrack(Constant.DOWLOAD);
+       }
+
+    }
 
     @Override
     public void onFetchDataSuccess(List<Track> data) {

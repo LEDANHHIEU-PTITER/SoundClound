@@ -161,10 +161,14 @@ public class PlaylistDetailTracksFragment extends BaseFragment
                 new DialogManagerInterface.DialogListener() {
                     @Override
                     public void onDialogPositiveClick() {
-                        User user = SharePreferences.getInstance().getUser();
-                        if(user != null) {
-                            mPresenter.deleteTrackFavorie(track);
-
+                        if(flag.equals(Constant.FAVORITE)) {
+                            User user = SharePreferences.getInstance().getUser();
+                            if (user != null) {
+                                mPresenter.deleteTrackFavorie(track);
+                            }
+                        }
+                        if (flag.equals(Constant.DOWLOAD)) {
+                            mPresenter.deleteTrackLocal(track);
                         }
                     }
 

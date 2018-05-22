@@ -62,7 +62,7 @@
     </string-array>
     <string name="facebook_app_id">1597316986984626</string>
     <string name="fb_login_protocol_scheme">fb1597316986984626</string>
-    <string name="action_edit_name_playlist">Edit Name</string>
+    <string name="action_edit_name_playlist">Rename</string>
     <string name="action_delete_playlist">Delete</string>
     <string name="msg_delete_playlist">Do you want delete this playlist ? </string>
     <string name="msg_delete_track">Do you want delete this track ? </string>

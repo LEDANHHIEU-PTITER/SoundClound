@@ -8,6 +8,7 @@ import android.provider.MediaStore;
 
 import com.framgia.mysoundcloud.R;
 import com.framgia.mysoundcloud.data.model.Playlist;
+import com.framgia.mysoundcloud.data.model.PublisherMetadata;
 import com.framgia.mysoundcloud.data.model.Track;
 import com.framgia.mysoundcloud.data.source.TrackDataSource;
 import com.framgia.mysoundcloud.data.source.local.config.PlaylistTrackDbHelper;
@@ -15,7 +16,6 @@ import com.framgia.mysoundcloud.data.source.local.config.PlaylistTrackDbHelper;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 
 
 public class TrackLocalDataSource implements TrackDataSource.LocalDataSource {
@@ -44,40 +44,25 @@ public class TrackLocalDataSource implements TrackDataSource.LocalDataSource {
 
     @Override
     public void getTracksLocal(OnFetchDataListener<Track> listener) {
-        ArrayList<Track> tracks = new ArrayList<>();
-
         ContentResolver contentResolver = mContext.getContentResolver();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor cursor = contentResolver.query(uri, null,
-                MediaStore.Audio.Media.DATA + " LIKE ?",
-                new String[]{QUERY_DIRECTORY_NAME}, null);
-
-        if (cursor == null) {
-            listener.onFetchDataFailure(mContext.getString(R.string.msg_load_downloaded_failed));
-            return;
-        }
-
-        if (!cursor.moveToFirst()) {
-            listener.onFetchDataSuccess(tracks);
-            return;
-        }
-
-        // Read data
-        int titleColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
-        int filePathColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
-        int durationColumn = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
-        int idColumn = cursor.getColumnIndex(MediaStore.Audio.Media._ID);
-
-        do {
+        Cursor cursor = contentResolver.query(uri, null, null,
+                null, null);
+        List<Track> listLocal = new ArrayList<>();
+        while (cursor.moveToNext()) {
             Track track = new Track();
-            track.setTitle(cursor.getString(titleColumn));
-            track.setUri(cursor.getString(filePathColumn));
-            track.setFullDuration(cursor.getInt(durationColumn));
-            track.setId(cursor.getInt(idColumn));
-            tracks.add(track);
-        } while (cursor.moveToNext());
 
-        listener.onFetchDataSuccess(tracks);
+            track.setUri(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA)));
+            track.setTitle(
+                    cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)));
+            track.setFullDuration(
+                    cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)));
+            track.setPublisherMetadata(new PublisherMetadata(cursor.getString(
+                    cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))));
+            listLocal.add(track);
+        }
+        cursor.close();
+        listener.onFetchDataSuccess(listLocal);
     }
 
     @Override
@@ -85,7 +70,6 @@ public class TrackLocalDataSource implements TrackDataSource.LocalDataSource {
     }
 
     @Override
-    // TODO: 4/25/2018 delete track 
     public boolean deleteTrack(Track track) {
         File file = new File(track.getUri());
         String where = MediaStore.MediaColumns.DATA + "=?";
@@ -110,10 +94,11 @@ public class TrackLocalDataSource implements TrackDataSource.LocalDataSource {
             mPlaylistTrackDbHelper.insertToTablePlaylistHasTrack(tracks[i].getId(), playlistId, listener);
         }
     }
+
     // Delete PlayList
     @Override
-    public void deletePlaylist(Playlist playlist ,String userId, OnHandleDatabaseListener listener) {
-           mPlaylistTrackDbHelper.deletePlayList(playlist,userId,listener);
+    public void deletePlaylist(Playlist playlist, String userId, OnHandleDatabaseListener listener) {
+        mPlaylistTrackDbHelper.deletePlayList(playlist, userId, listener);
     }
 
     public void addPlaylistByIdUser(final String idUser,
@@ -228,7 +213,7 @@ public class TrackLocalDataSource implements TrackDataSource.LocalDataSource {
 
     @Override
     public void deleteTrackFavorite(Track track, String idUser, OnHandleDatabaseListener listener) {
-        if(mPlaylistTrackDbHelper == null) return;
+        if (mPlaylistTrackDbHelper == null) return;
         mPlaylistTrackDbHelper.deleteTrackFavorite(track, idUser, listener);
     }
 

@@ -3,9 +3,11 @@ package com.framgia.mysoundcloud.data.source.remote;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Environment;
 
 import com.framgia.mysoundcloud.R;
 import com.framgia.mysoundcloud.data.model.Track;
+import com.framgia.mysoundcloud.utils.Constant;
 import com.framgia.mysoundcloud.utils.StringUtil;
 
 
@@ -33,21 +35,22 @@ public class DownloadTrackManager {
             return;
         }
 
-        if (!track.isDownloadable()) {
-            notifyCopyRightIssue();
-            return;
-        }
+//        if (!track.isDownloadable()) {
+//            notifyCopyRightIssue();
+//            return;
+//        }
 
         DownloadManager manager = (DownloadManager) mContext
                 .getSystemService(Context.DOWNLOAD_SERVICE);
+//        String url = StringUtil.getUrlStreamTrack(mTracks.get(mCurrentTrackPosition).getUri());
         DownloadManager.Request request = new DownloadManager.Request(
-                Uri.parse(StringUtil.convertUrlDownloadTrack(track.getDowloadUrl())));
+                Uri.parse(StringUtil.getUrlStreamTrack(track.getUri())));
         request.setTitle(track.getTitle());
         request.allowScanningByMediaScanner();
         request.setNotificationVisibility(
                 DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationUri(Uri.parse(LOCATE_DOWNLOAD_DIRECTORY
-                + track.getTitle() + FILE_EXTENSION_MP3));
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
+                track.getTitle() + FILE_EXTENSION_MP3);
         manager.enqueue(request);
 
         notifyDownloading();
@@ -73,4 +76,5 @@ public class DownloadTrackManager {
 
         void onDownloading();
     }
+
 }

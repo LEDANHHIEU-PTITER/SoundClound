@@ -20,6 +20,8 @@ public interface PlayListDetailViewContract {
         void loadTrack(String flag);
 
         void deleteTrackFavorie(Track track);
+
+        public void deleteTrackLocal(Track track);
     }
 
     interface DeleteTrackListener {

@@ -34,7 +34,8 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PlaylistFragment extends Fragment implements PlaylistContract.View, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, PlaylistAdapter.CallBack {
+public class PlaylistFragment extends Fragment implements PlaylistContract.View,
+        SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, PlaylistAdapter.CallBack {
 
     private static PlaylistFragment sPlaylistFragment;
 
